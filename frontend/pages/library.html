@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Library — BookWorm's Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/library.css">
+</head>
+<body>
+
+
+<!-- Ticker -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span>✦ New Arrivals Weekly</span><span>◆ Mystery · Fantasy · Sci-Fi · Romance</span>
+    <span>✦ Curated by Real Readers</span><span>◆ BookWorm's Hub — Est. 2024</span>
+    <span>✦ New Arrivals Weekly</span><span>◆ Mystery · Fantasy · Sci-Fi · Romance</span>
+    <span>✦ Curated by Real Readers</span><span>◆ BookWorm's Hub — Est. 2024</span>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="../index.html">
+      <span class="logo-box">BW</span>
+      <span class="logo-text">BookWorm's<br><em>Hub</em></span>
+    </a>
+    <div class="nav-center">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="library.html" class="nav-link active">My Library</a>
+      <a href="#" class="nav-link">Reviews</a>
+      <div class="nav-dropdown-wrap">
+        <button class="nav-link">Genres <span class="arrow">▾</span></button>
+        <div class="nav-dropdown">
+          <a class="dd-item" href="genre.html?g=mystery"><span class="dd-icon">🖤</span> Mystery</a>
+          <a class="dd-item" href="genre.html?g=science_fiction"><span class="dd-icon">🚀</span> Sci-Fi</a>
+          <a class="dd-item" href="genre.html?g=fantasy"><span class="dd-icon">🐉</span> Fantasy</a>
+          <a class="dd-item" href="genre.html?g=romance"><span class="dd-icon">💌</span> Romance</a>
+          <a class="dd-item" href="genre.html?g=thriller"><span class="dd-icon">⚡</span> Thriller</a>
+          <a class="dd-item" href="genre.html?g=horror"><span class="dd-icon">👻</span> Horror</a>
+          <a class="dd-item" href="genre.html?g=biography"><span class="dd-icon">✍️</span> Biography</a>
+          <a class="dd-item" href="genre.html?g=history"><span class="dd-icon">🏛️</span> History</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <button class="nav-icon-btn" id="navSearchToggle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <a href="library.html" class="nav-cta">My Library</a>
+    </div>
+  </div>
+  <div class="nav-search-bar" id="navSearchBar">
+    <input class="nav-search-input" id="searchInput" type="text" placeholder="Search books, authors, genres…">
+    <button class="nav-search-go" id="searchBtn">Search →</button>
+    <button class="nav-search-close" id="navSearchClose">✕</button>
+  </div>
+</nav>
+
+<!-- Library Hero -->
+<section class="lib-hero">
+  <div class="lib-hero-inner">
+    <div class="lib-hero-left">
+      <div class="lib-eyebrow">Reader's Library</div>
+      <h1 class="lib-title">Your Personal<br><em>Reading World.</em></h1>
+      <p class="lib-desc">Track what you've read, what you're reading, and what's next on your list.</p>
+    </div>
+    <div class="lib-hero-stats" id="libStats">
+      <div class="lib-stat"><div class="lib-stat-n" id="statTotal">0</div><div class="lib-stat-l">Total Books</div></div>
+      <div class="lib-stat-sep"></div>
+      <div class="lib-stat"><div class="lib-stat-n" id="statRead">0</div><div class="lib-stat-l">Read</div></div>
+      <div class="lib-stat-sep"></div>
+      <div class="lib-stat"><div class="lib-stat-n" id="statReading">0</div><div class="lib-stat-l">Reading</div></div>
+      <div class="lib-stat-sep"></div>
+      <div class="lib-stat"><div class="lib-stat-n" id="statWant">0</div><div class="lib-stat-l">Want to Read</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Shelf Tabs -->
+<div class="shelf-tabs-bar">
+  <div class="shelf-tabs-inner">
+    <button class="shelf-tab active" data-shelf="all">All Books</button>
+    <button class="shelf-tab" data-shelf="reading">Currently Reading</button>
+    <button class="shelf-tab" data-shelf="read">Finished</button>
+    <button class="shelf-tab" data-shelf="want">Want to Read</button>
+    <div class="shelf-tab-actions">
+      <div class="lib-search-wrap">
+        <input class="lib-search" id="libSearch" type="text" placeholder="Filter my books…">
+      </div>
+      <button class="lib-clear-btn" id="libClearBtn">Clear All</button>
+    </div>
+  </div>
+</div>
+
+<!-- Books Display -->
+<main class="lib-main">
+  <!-- Empty State -->
+  <div class="lib-empty" id="libEmpty">
+    <div class="lib-empty-icon">📚</div>
+    <h2 class="lib-empty-title">Your library is empty</h2>
+    <p class="lib-empty-desc">Browse books on the homepage and click <strong>Add to My Library</strong> to start building your collection.</p>
+    <a href="../index.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;">Browse Books <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+
+  <!-- Book List -->
+  <div class="lib-grid" id="libGrid"></div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="nav-logo">
+      <span class="logo-box">BW</span>
+      <span class="logo-text">BookWorm's<br><em>Hub</em></span>
+    </div>
+    <div class="footer-copy">© 2026 BookWorm's Hub. All rights reserved.</div>
+    <div class="footer-links"><a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a></div>
+  </div>
+</footer>
+
+<!-- Book Modal (for changing shelf / details) -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="lib-modal" id="libModal">
+  <button class="modal-close" id="modalClose">✕</button>
+  <div class="modal-cover-wrap">
+    <div class="modal-cover" id="modalCover">
+      <img id="modalCoverImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
+      <span id="modalCoverText" class="modal-cover-text"></span>
+    </div>
+  </div>
+  <div class="modal-info">
+    <div class="modal-genre" id="modalGenre">✦ Genre</div>
+    <div class="modal-title" id="modalTitle">Book Title</div>
+    <div class="modal-author" id="modalAuthor">Author</div>
+    <div class="modal-stars" id="modalStars">★★★★★</div>
+    <div class="modal-section-label">Move to shelf</div>
+    <div class="modal-shelf-btns">
+      <button class="modal-shelf-btn" data-shelf="reading">📖 Reading</button>
+      <button class="modal-shelf-btn" data-shelf="read">✅ Finished</button>
+      <button class="modal-shelf-btn" data-shelf="want">🔖 Want to Read</button>
+    </div>
+    <button class="modal-remove-btn" id="modalRemoveBtn">Remove from Library</button>
+  </div>
+</div>
+
+<!-- Side Panel -->
+<div class="panel-backdrop" id="backdrop"></div>
+<aside class="side-panel" id="sidePanel">
+  <button class="panel-close-btn" id="panelClose">✕</button>
+  <div class="panel-header">
+    <div class="panel-cover" id="panelCover">
+      <img id="panelCoverImg" src="" alt="" style="display:none;">
+      <span class="panel-cover-fallback" id="panelCoverText"></span>
+    </div>
+    <div class="panel-info">
+      <div class="panel-genre-tag" id="panelGenre">✦ Genre</div>
+      <div class="panel-title" id="panelTitle">Book Title</div>
+      <div class="panel-author" id="panelAuthor">Author</div>
+      <div class="panel-meta-row">
+        <span class="panel-stars" id="panelStars">★★★★★</span>
+        <span class="panel-rating" id="panelRating">—</span>
+        <span class="panel-pages" id="panelPages">—</span>
+      </div>
+      <button class="panel-add-btn" id="panelAddBtn">✦ Add to My Library</button>
+    </div>
+  </div>
+  <div class="panel-tabs">
+    <button class="panel-tab active" data-tab="summary">Summary</button>
+    <button class="panel-tab" data-tab="reviews">Reviews</button>
+    <button class="panel-tab" data-tab="details">Details</button>
+  </div>
+  <div class="panel-body">
+    <div class="panel-tab-content active" id="tab-summary">
+      <p class="tab-label">About This Book</p>
+      <div class="summary-text" id="panelSummary">Loading…</div>
+      <p class="tab-label">Book Details</p>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-label">Genre</div><div class="detail-value" id="detailGenre">—</div></div>
+        <div class="detail-item"><div class="detail-label">Pages</div><div class="detail-value" id="detailPages">—</div></div>
+        <div class="detail-item"><div class="detail-label">Published</div><div class="detail-value" id="detailYear">—</div></div>
+        <div class="detail-item"><div class="detail-label">Rating</div><div class="detail-value" id="detailRating">—</div></div>
+      </div>
+    </div>
+    <div class="panel-tab-content" id="tab-reviews">
+      <div class="reviews-top">
+        <div class="rev-big-num" id="reviewsBigNum">—</div>
+        <div class="rev-bars" id="reviewsBars"></div>
+      </div>
+      <div id="reviewsList"></div>
+    </div>
+    <div class="panel-tab-content" id="tab-details">
+      <p class="tab-label">Subjects</p>
+      <div id="panelTags" class="tags-wrap"></div>
+      <p class="tab-label">Similar Reads</p>
+      <div id="panelSimilar"><div class="similar-ph">Sign in to see personalised recommendations</div></div>
+    </div>
+  </div>
+</aside>
+
+<script src="../js/api.js"></script>
+<script src="../js/panel.js"></script>
+<script src="../js/library.js"></script>
+</body>
+</html>
