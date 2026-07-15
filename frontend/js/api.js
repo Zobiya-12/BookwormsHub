@@ -1,5 +1,8 @@
 // ─── api.js ───────────────────────────────────────────────────────────────────
-const API_BASE = 'http://localhost:4300/api/books';
+// Relative path — works locally (http://localhost:4300) and once deployed
+// (e.g. https://your-app.onrender.com), since the Express server serves both
+// the frontend and the /api routes from the same origin.
+const API_BASE = '/api/books';
 
 const api = {
   async search(query, limit = 8) {
