@@ -3,7 +3,7 @@
 A book discovery and review site I built to practice full-stack work — search books, browse by genre, and keep a personal reading library, all backed by a small Express server.
  
 ## Live Demo
-**https://bookwormshub.onrender.com/**
+**[Bookworms Hub](https://zobiya-12.github.io/BookwormsHub/index.html)**
 ## What it does
 
 - Search for books and browse by genre (mystery, sci-fi, fantasy, romance, thriller, horror, biography, history)
