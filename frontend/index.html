@@ -7,269 +7,146 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-
-<!-- Ticker -->
-<div class="ticker-bar">
-  <div class="ticker-track">
-    <span>✦ New Arrivals Weekly</span><span>◆ Mystery · Fantasy · Sci-Fi · Romance</span>
-    <span>✦ Curated by Real Readers</span><span>◆ BookWorm's Hub — Est. 2024</span>
-    <span>✦ New Arrivals Weekly</span><span>◆ Mystery · Fantasy · Sci-Fi · Romance</span>
-    <span>✦ Curated by Real Readers</span><span>◆ BookWorm's Hub — Est. 2024</span>
-  </div>
-</div>
-
-<!-- Nav -->
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
-    <a class="nav-logo" href="index.html">
-      <span class="logo-box">BW</span>
-      <span class="logo-text">BookWorm's<br><em>Hub</em></span>
-    </a>
+    <a class="nav-logo" href="index.html"><span class="logo-box">BW</span><span class="logo-text">BookWorm's<br><em>Hub</em></span></a>
     <div class="nav-center">
       <a href="index.html" class="nav-link active">Home</a>
       <a href="pages/library.html" class="nav-link">My Library</a>
-      <a href="#" class="nav-link">Reviews</a>
       <div class="nav-dropdown-wrap">
-        <button class="nav-link">Genres <span class="arrow">▾</span></button>
+        <button class="nav-link" aria-haspopup="true">Genres <span class="arrow">▾</span></button>
         <div class="nav-dropdown">
-          <a class="dd-item" href="pages/genre.html?g=mystery"><span class="dd-icon">🖤</span> Mystery</a>
-          <a class="dd-item" href="pages/genre.html?g=science_fiction"><span class="dd-icon">🚀</span> Sci-Fi</a>
-          <a class="dd-item" href="pages/genre.html?g=fantasy"><span class="dd-icon">🐉</span> Fantasy</a>
-          <a class="dd-item" href="pages/genre.html?g=romance"><span class="dd-icon">💌</span> Romance</a>
-          <a class="dd-item" href="pages/genre.html?g=thriller"><span class="dd-icon">⚡</span> Thriller</a>
-          <a class="dd-item" href="pages/genre.html?g=horror"><span class="dd-icon">👻</span> Horror</a>
-          <a class="dd-item" href="pages/genre.html?g=biography"><span class="dd-icon">✍️</span> Biography</a>
-          <a class="dd-item" href="pages/genre.html?g=history"><span class="dd-icon">🏛️</span> History</a>
+          <a class="dd-item" href="pages/genre.html?g=mystery">Mystery</a>
+          <a class="dd-item" href="pages/genre.html?g=science_fiction">Sci-Fi</a>
+          <a class="dd-item" href="pages/genre.html?g=fantasy">Fantasy</a>
+          <a class="dd-item" href="pages/genre.html?g=romance">Romance</a>
+          <a class="dd-item" href="pages/genre.html?g=thriller">Thriller</a>
+          <a class="dd-item" href="pages/genre.html?g=horror">Horror</a>
+          <a class="dd-item" href="pages/genre.html?g=biography">Biography</a>
+          <a class="dd-item" href="pages/genre.html?g=history">History</a>
+          <a class="dd-item" href="pages/genre.html?g=classic_literature">Classics</a>
         </div>
       </div>
     </div>
     <div class="nav-right">
-      <button class="nav-icon-btn" id="navSearchToggle">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </button>
+      <button class="nav-icon-btn" id="navSearchToggle" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
       <a href="pages/library.html" class="nav-cta">My Library</a>
+      <button class="nav-icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     </div>
   </div>
-  <div class="nav-search-bar" id="navSearchBar">
-    <input class="nav-search-input" id="searchInput" type="text" placeholder="Search books, authors, genres…">
-    <button class="nav-search-go" id="searchBtn">Search →</button>
-    <button class="nav-search-close" id="navSearchClose">✕</button>
+  <div class="nav-search-bar">
+    <input class="nav-search-input" id="searchInput" type="text" placeholder="Search books, authors, subjects…">
+    <button class="nav-search-go" id="searchBtn">Search</button>
+    <button class="nav-search-close" id="navSearchClose" aria-label="Close search">✕</button>
   </div>
 </nav>
 
-<!-- Hero -->
 <section class="hero">
-  <div class="hero-bg">
-    <div class="hero-orb orb-1"></div>
-    <div class="hero-orb orb-2"></div>
-    <div class="hero-grain"></div>
-  </div>
+  <div class="hero-bg"><div class="hero-orb orb-1"></div><div class="hero-orb orb-2"></div></div>
   <div class="hero-inner">
     <div class="hero-left">
-      <div class="hero-eyebrow"><span class="ey-vol">Vol. 01</span><span class="ey-sep">—</span><span>April 2026 Edition</span></div>
-      <h1 class="hero-title">
-        <span class="ht-small">The Literary</span>
-        <span class="ht-big">Universe</span>
-        <span class="ht-italic">for Readers.</span>
-      </h1>
+      <div class="hero-eyebrow">Vol. 01 · April 2026 edition</div>
+      <h1 class="hero-title"><span class="ht-small">The Literary</span><span class="ht-big">Universe</span><span class="ht-italic">for readers.</span></h1>
       <p class="hero-desc">Discover, obsess, and fall into books that reshape your world. Curated for the reader who never just reads.</p>
       <div class="hero-actions">
-        <button class="btn-primary" id="heroExploreBtn">Explore Library <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-        <a href="pages/library.html" class="btn-ghost">My Library →</a>
+        <button class="btn-primary" id="heroExploreBtn">Explore genres</button>
+        <a href="pages/library.html" class="btn-ghost">My Library</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><div class="stat-n">500<em>+</em></div><div class="stat-l">Books</div></div>
-        <div class="stat-sep"></div>
-        <div class="stat"><div class="stat-n">8</div><div class="stat-l">Genres</div></div>
-        <div class="stat-sep"></div>
-        <div class="stat"><div class="stat-n">2.4<em>K</em></div><div class="stat-l">Reviews</div></div>
+        <div class="stat"><div class="stat-n">500+</div><div class="stat-l">Books</div></div>
+        <div class="stat"><div class="stat-n">9</div><div class="stat-l">Genres</div></div>
+        <div class="stat"><div class="stat-n">2.4K</div><div class="stat-l">Reviews</div></div>
       </div>
     </div>
     <div class="hero-right">
       <div class="hero-books">
         <div class="hb hb-back"><span>Iron Flame</span></div>
         <div class="hb hb-mid"><span>The Midnight Library</span></div>
-        <div class="hb hb-front" id="heroFrontBook">
-          <div class="hb-cover-img" id="heroCoverImg" style="display:none;"></div>
-          <div class="hb-inner" id="heroBookInner">
-            <div class="hb-tag">✦ Editor's Pick</div>
-            <div class="hb-title">Mother of Strangers</div>
-            <div class="hb-author">Suad Amiry</div>
-          </div>
-        </div>
-      </div>
-      <div class="hero-ticker-pill">
-        <span class="htp-dot"></span>
-        <div class="htp-track" id="liveTrack">
-          <div class="htp-item active">Just Added: The Blue Hour</div>
-          <div class="htp-item">Trending: Project Hail Mary</div>
-          <div class="htp-item">Review of the Week: Mother of Strangers</div>
-          <div class="htp-item">New: The Blue Hour</div>
-        </div>
+        <button class="hb hb-front" id="heroFrontBook" aria-label="Open Mother of Strangers">
+          <div class="hb-tag">✦ Editor's pick</div><div class="hb-title">Mother of Strangers</div><div class="hb-author">Suad Amiry</div>
+        </button>
       </div>
     </div>
   </div>
-  <div class="hero-quote">
-    <span class="hq-mark">"</span>
-    <span class="hq-text">A reader lives a thousand lives before he dies. The man who never reads lives only one.</span>
-    <span class="hq-attr">— George R.R. Martin</span>
-  </div>
+  <p class="hero-quote">“A reader lives a thousand lives before he dies. The man who never reads lives only one.” <em>George R.R. Martin</em></p>
 </section>
 
-<!-- Search Results -->
-<div class="search-results-section" id="searchResultsSection" style="display:none;">
-  <div class="sec-header">
-    <div class="sec-label" id="searchResultsLabel">Results</div>
-    <button class="sec-clear" id="clearSearchBtn">✕ Clear</button>
-  </div>
+<div class="search-results-section" id="searchResultsSection" style="display:none">
+  <div class="sec-header"><div class="sec-label" id="searchResultsLabel">Results</div><button class="sec-clear" id="clearSearchBtn">Clear results</button></div>
   <div class="books-grid" id="searchResultsGrid"></div>
 </div>
 
-<!-- Genre Cards -->
 <section class="genres-section fade-up">
-  <div class="sec-header">
-    <div class="sec-label">Browse by Genre</div>
-    <div class="sec-sub">Find your next obsession</div>
-  </div>
+  <div class="sec-header"><h2 class="sec-label">Browse by genre</h2><div class="sec-sub">Find your next obsession</div></div>
   <div class="genres-grid">
-    <a class="genre-card" href="pages/genre.html?g=mystery"><div class="gc-bg gc-mystery"></div><div class="gc-content"><span class="gc-icon">🖤</span><div class="gc-name">Mystery</div><div class="gc-count" data-genre="mystery">Loading…</div><div class="gc-arrow">→</div></div></a>
-    <a class="genre-card" href="pages/genre.html?g=science_fiction"><div class="gc-bg gc-scifi"></div><div class="gc-content"><span class="gc-icon">🚀</span><div class="gc-name">Sci-Fi</div><div class="gc-count" data-genre="science_fiction">Loading…</div><div class="gc-arrow">→</div></div></a>
-    <a class="genre-card" href="pages/genre.html?g=fantasy"><div class="gc-bg gc-fantasy"></div><div class="gc-content"><span class="gc-icon">🐉</span><div class="gc-name">Fantasy</div><div class="gc-count" data-genre="fantasy">Loading…</div><div class="gc-arrow">→</div></div></a>
-    <a class="genre-card" href="pages/genre.html?g=romance"><div class="gc-bg gc-romance"></div><div class="gc-content"><span class="gc-icon">💌</span><div class="gc-name">Romance</div><div class="gc-count" data-genre="romance">Loading…</div><div class="gc-arrow">→</div></div></a>
-    <a class="genre-card" href="pages/genre.html?g=thriller"><div class="gc-bg gc-thriller"></div><div class="gc-content"><span class="gc-icon">⚡</span><div class="gc-name">Thriller</div><div class="gc-count" data-genre="thriller">Loading…</div><div class="gc-arrow">→</div></div></a>
-    <a class="genre-card" href="pages/genre.html?g=horror"><div class="gc-bg gc-horror"></div><div class="gc-content"><span class="gc-icon">👻</span><div class="gc-name">Horror</div><div class="gc-count" data-genre="horror">Loading…</div><div class="gc-arrow">→</div></div></a>
-    <a class="genre-card" href="pages/genre.html?g=biography"><div class="gc-bg gc-bio"></div><div class="gc-content"><span class="gc-icon">✍️</span><div class="gc-name">Biography</div><div class="gc-count" data-genre="biography">Loading…</div><div class="gc-arrow">→</div></div></a>
-    <a class="genre-card" href="pages/genre.html?g=history"><div class="gc-bg gc-history"></div><div class="gc-content"><span class="gc-icon">🏛️</span><div class="gc-name">History</div><div class="gc-count" data-genre="history">Loading…</div><div class="gc-arrow">→</div></div></a>
+    <a class="genre-card gc-mystery" href="pages/genre.html?g=mystery"><div class="gc-name">Mystery</div><div class="gc-count" data-genre="mystery">Loading…</div></a>
+    <a class="genre-card gc-scifi" href="pages/genre.html?g=science_fiction"><div class="gc-name">Sci-Fi</div><div class="gc-count" data-genre="science_fiction">Loading…</div></a>
+    <a class="genre-card gc-fantasy" href="pages/genre.html?g=fantasy"><div class="gc-name">Fantasy</div><div class="gc-count" data-genre="fantasy">Loading…</div></a>
+    <a class="genre-card gc-romance" href="pages/genre.html?g=romance"><div class="gc-name">Romance</div><div class="gc-count" data-genre="romance">Loading…</div></a>
+    <a class="genre-card gc-thriller" href="pages/genre.html?g=thriller"><div class="gc-name">Thriller</div><div class="gc-count" data-genre="thriller">Loading…</div></a>
+    <a class="genre-card gc-horror" href="pages/genre.html?g=horror"><div class="gc-name">Horror</div><div class="gc-count" data-genre="horror">Loading…</div></a>
+    <a class="genre-card gc-bio" href="pages/genre.html?g=biography"><div class="gc-name">Biography</div><div class="gc-count" data-genre="biography">Loading…</div></a>
+    <a class="genre-card gc-history" href="pages/genre.html?g=history"><div class="gc-name">History</div><div class="gc-count" data-genre="history">Loading…</div></a>
+    <a class="genre-card gc-classics" href="pages/genre.html?g=classic_literature"><div class="gc-name">Classics</div><div class="gc-count" data-genre="classic_literature">Loading…</div></a>
   </div>
 </section>
 
-<!-- Top Picks -->
-<section class="books-section fade-up">
-  <div class="sec-header">
-    <div class="sec-label">Top Picks</div>
-    <div class="sec-sub">Our editors' favourite reads right now</div>
-  </div>
-  <div class="books-grid" id="topPicksGrid"><div class="loading-msg">Loading top picks…</div></div>
+<section class="books-section fade-up" id="finder">
+  <div class="sec-header"><h2 class="sec-label">Find your next read</h2><div class="sec-sub">Pick a mood and a length. Open any book for its summary and reviews.</div></div>
+  <div class="finder-row" id="moodChips" role="group" aria-label="Mood"></div>
+  <div class="finder-row" id="lenChips" role="group" aria-label="Length"></div>
+  <div class="finder-actions"><button class="btn-ghost" id="surpriseBtn">Surprise me</button><span class="sec-sub" id="finderNote"></span></div>
+  <div class="books-grid" id="finderGrid"><div class="loading-msg">Choose a mood to start.</div></div>
 </section>
 
-<!-- Featured Review -->
-<div class="featured-review fade-up">
-  <div class="fr-inner">
-    <div class="fr-qmark">"</div>
-    <div class="fr-content">
-      <div class="fr-stars">★★★★★</div>
-      <p class="fr-text">"For if life had taught her anything, it was that healing and peace can begin only with acknowledgment of wrongs committed."
-From Mornings in Jenin by Susan Abulhawa.</p>
-      <div class="fr-attr">Verified Reader &nbsp;·&nbsp; Fiction &nbsp;·&nbsp; April 2026</div>
-    </div>
-    <div class="fr-qmark fr-qclose">"</div>
-  </div>
-</div>
-
-<!-- New Releases -->
-<section class="releases-section fade-up">
-  <div class="sec-header">
-    <div class="sec-label">New Releases</div>
-    <div class="sec-sub">Fresh off the press</div>
-  </div>
-  <div class="releases-scroll" id="newReleasesScroll"><div class="loading-msg">Loading…</div></div>
+<section class="books-section fade-up" id="byYear">
+  <div class="sec-header"><h2 class="sec-label">Best reads by year</h2><div class="sec-sub">The highest-rated books first published in the year you pick</div></div>
+  <div class="finder-row scroll-row" id="yearChips" role="group" aria-label="Year"></div>
+  <div class="books-grid" id="yearGrid"><div class="loading-msg">Loading…</div></div>
 </section>
 
-<!-- Editor Strip -->
-<div class="editorial-strip fade-up">
-  <div class="es-label">Editor's Note — April 2026</div>
-  <div class="es-text">This week we're obsessing over <strong>Madeline Cash</strong> — Whose book is rippling with humor, warmth, and style, Lost Lambs is a new vision of the charms and pitfalls of family dysfunction. <em>Lost Lambs</em>.</div>
-</div>
+<section class="books-section fade-up" id="byCountry">
+  <div class="sec-header"><h2 class="sec-label">Best books by country</h2><div class="sec-sub">Top-rated books set in, or about, the country you pick</div></div>
+  <div class="finder-row scroll-row" id="countryChips" role="group" aria-label="Country"></div>
+  <div class="books-grid" id="countryGrid"><div class="loading-msg">Loading…</div></div>
+</section>
 
-<!-- Subscribe -->
+<figure class="featured-review fade-up" id="featured">
+  <div class="fr-stars" aria-label="5 stars">★★★★★</div>
+  <blockquote class="fr-text">For if life had taught her anything, it was that healing and peace can begin only with acknowledgment of wrongs committed.</blockquote>
+  <figcaption class="fr-attr">From <em>Mornings in Jenin</em> by Susan Abulhawa · Verified reader, April 2026</figcaption>
+</figure>
+
+<aside class="editorial-strip fade-up">
+  <div class="es-label">Editor's note, April 2026</div>
+  <p class="es-text">This week we're obsessing over <strong>Madeline Cash</strong>. <em>Lost Lambs</em> ripples with humor, warmth and style, and offers a new vision of the charms and pitfalls of family dysfunction.</p>
+</aside>
+
 <section class="subscribe-section fade-up">
   <div class="sub-inner">
-    <div class="sub-left">
-      <div class="sub-eyebrow">Newsletter</div>
-      <h2 class="sub-headline">Stay in<br><em>the story.</em></h2>
-      <p class="sub-copy">Weekly drops of curated reads, hidden gems, and reviews worth reading.</p>
-    </div>
+    <div><h2 class="sub-headline">Stay in the story.</h2><p class="sub-copy">Weekly drops of curated reads, hidden gems, and reviews worth reading.</p></div>
     <div class="sub-right">
-      <input class="sub-input" type="email" placeholder="your@email.com">
-      <button class="sub-btn">Subscribe →</button>
-      <p class="sub-note">No spam. Just good books. Unsubscribe anytime.</p>
+      <input class="sub-input" type="email" placeholder="your@email.com" aria-label="Email address">
+      <button class="sub-btn">Subscribe</button>
+      <p class="sub-note">No spam. Unsubscribe anytime.</p>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="nav-logo">
-      <span class="logo-box">BW</span>
-      <span class="logo-text">BookWorm's<br><em>Hub</em></span>
-    </div>
-    <div class="footer-copy">© 2026 BookWorm's Hub. All rights reserved.</div>
-    <div class="footer-links"><a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a></div>
-  </div>
-</footer>
-
-<!-- Side Panel -->
-<div class="panel-backdrop" id="backdrop"></div>
-<aside class="side-panel" id="sidePanel">
-  <button class="panel-close-btn" id="panelClose">✕</button>
-  <div class="panel-header">
-    <div class="panel-cover" id="panelCover">
-      <img id="panelCoverImg" src="" alt="" style="display:none;">
-      <span class="panel-cover-fallback" id="panelCoverText"></span>
-    </div>
-    <div class="panel-info">
-      <div class="panel-genre-tag" id="panelGenre">✦ Genre</div>
-      <div class="panel-title" id="panelTitle">Book Title</div>
-      <div class="panel-author" id="panelAuthor">Author</div>
-      <div class="panel-meta-row">
-        <span class="panel-stars" id="panelStars">★★★★★</span>
-        <span class="panel-rating" id="panelRating">—</span>
-        <span class="panel-pages" id="panelPages">—</span>
-      </div>
-      <button class="panel-add-btn" id="panelAddBtn">✦ Add to My Library</button>
-    </div>
-  </div>
-  <div class="panel-tabs">
-    <button class="panel-tab active" data-tab="summary">Summary</button>
-    <button class="panel-tab" data-tab="reviews">Reviews</button>
-    <button class="panel-tab" data-tab="details">Details</button>
-  </div>
-  <div class="panel-body">
-    <div class="panel-tab-content active" id="tab-summary">
-      <p class="tab-label">About This Book</p>
-      <div class="summary-text" id="panelSummary">Loading…</div>
-      <p class="tab-label">Book Details</p>
-      <div class="detail-grid">
-        <div class="detail-item"><div class="detail-label">Genre</div><div class="detail-value" id="detailGenre">—</div></div>
-        <div class="detail-item"><div class="detail-label">Pages</div><div class="detail-value" id="detailPages">—</div></div>
-        <div class="detail-item"><div class="detail-label">Published</div><div class="detail-value" id="detailYear">—</div></div>
-        <div class="detail-item"><div class="detail-label">Rating</div><div class="detail-value" id="detailRating">—</div></div>
-      </div>
-    </div>
-    <div class="panel-tab-content" id="tab-reviews">
-      <div class="reviews-top">
-        <div class="rev-big-num" id="reviewsBigNum">—</div>
-        <div class="rev-bars" id="reviewsBars"></div>
-      </div>
-      <div id="reviewsList"></div>
-    </div>
-    <div class="panel-tab-content" id="tab-details">
-      <p class="tab-label">Subjects</p>
-      <div id="panelTags" class="tags-wrap"></div>
-      <p class="tab-label">Similar Reads</p>
-      <div id="panelSimilar"><div class="similar-ph">Sign in to see personalised recommendations</div></div>
-    </div>
-  </div>
-</aside>
+<footer class="footer"><div class="footer-inner">
+  <div class="nav-logo"><span class="logo-box">BW</span><span class="logo-text">BookWorm's<br><em>Hub</em></span></div>
+  <div class="footer-copy">© 2026 BookWorm's Hub. All rights reserved.</div>
+  <div class="footer-links"><a href="#" data-pop="about">About</a><a href="#" data-pop="contact">Contact</a><a href="#" data-pop="privacy">Privacy</a></div>
+</div></footer>
 
 <script src="js/api.js"></script>
 <script src="js/panel.js"></script>
+<script src="js/site.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

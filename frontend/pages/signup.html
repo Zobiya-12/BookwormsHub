@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="../css/styles.css"><title>Join BookWorm's Hub</title></head>
+<body>
+<div id="siteNav"></div>
+<main class="sign-grid">
+  <form class="panel" id="form">
+    <div><h1>Start your library</h1><p class="sec-sub">Create a free reader profile to save books and post reviews.</p></div>
+    <div class="two">
+      <label class="field">Full name<input class="sub-input" id="name" required maxlength="60" autocomplete="name"></label>
+      <label class="field">Email<input class="sub-input" id="email" type="email" required maxlength="120" autocomplete="email"></label>
+    </div>
+    <h2>Pick your mascot</h2><div class="avatars" id="avatars"></div>
+    <h2>Favourite genres <small id="gc"></small></h2><div class="finder-row" id="pills"></div>
+    <h2>Yearly reading goal: <span id="goalV">25</span> books</h2>
+    <input type="range" id="goal" min="1" max="100" value="25" aria-label="Books per year"><p class="sec-sub" id="tierT"></p>
+    <button class="btn-primary" type="submit">Create my profile</button>
+    <a class="auth-back" id="later" href="../index.html">Maybe later</a>
+    <p class="sub-note">Demo profile: saved only in this browser. No password is collected.</p>
+  </form>
+  <aside><p class="sec-sub">Live preview</p><div id="preview"></div></aside>
+</main>
+<div id="siteFooter"></div>
+<script src="../js/api.js"></script><script src="../js/panel.js"></script><script src="../js/site.js"></script><script src="../js/signup.js"></script>
+</body></html>

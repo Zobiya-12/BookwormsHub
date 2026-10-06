@@ -1,208 +1,73 @@
-// ─── library.js ───────────────────────────────────────────────────────────────
-
-// Nav search
-const navSearchToggle = document.getElementById('navSearchToggle');
-if(navSearchToggle) {
-    navSearchToggle.addEventListener('click',()=>{document.getElementById('navSearchBar').classList.add('open');document.getElementById('searchInput').focus();});
-}
-const navSearchClose = document.getElementById('navSearchClose');
-if(navSearchClose) {
-    navSearchClose.addEventListener('click',()=>document.getElementById('navSearchBar').classList.remove('open'));
-}
-
-document.getElementById('searchBtn')?.addEventListener('click',()=>{
-  const q=document.getElementById('searchInput').value.trim();
-  if(q) window.location.href=`../index.html?search=${encodeURIComponent(q)}`;
-});
-
-// ── Library Storage ────────────────────────────────────────────────────────────
-function getLibrary() {
-  try { return JSON.parse(localStorage.getItem('bwh_library') || '[]'); }
-  catch { return []; }
-}
-function saveLibrary(lib) {
-  localStorage.setItem('bwh_library', JSON.stringify(lib));
-}
-
-// ── State ──────────────────────────────────────────────────────────────────────
-let currentShelf = 'all';
-let filterText   = '';
-let editingBook  = null;
-
-// ── Render ─────────────────────────────────────────────────────────────────────
-const SHELF_LABELS = { reading: '📖 Reading', read: '✅ Finished', want: '🔖 Want to Read' };
-const SHELF_CLASS  = { reading: 'shelf-reading', read: 'shelf-read', want: 'shelf-want' };
-
-function renderStars(r){
-    return r ? '★ ' + Number(r).toFixed(1) : '—';
-}
-
-function renderLibCard(book) {
-  const cover = book.cover
-    ? `<img src="${book.cover}" alt="${book.title}" onerror="this.parentElement.innerHTML='<div class=\'lib-cover-placeholder\'>${book.title}</div>'">`
-    : `<div class="lib-cover-placeholder">${book.title}</div>`;
-  const badge = `<span class="lib-shelf-badge ${SHELF_CLASS[book.shelf]||'shelf-want'}">${SHELF_LABELS[book.shelf]||'🔖 Want to Read'}</span>`;
-
-  return `
-    <div class="lib-book-card" data-id="${book.id}">
-      <div class="lib-book-cover">
-        ${cover}
-        ${badge}
-      </div>
-      <div class="lib-book-info">
-        <div class="lib-book-genre">✦ ${book.genres?.[0]||'Fiction'}</div>
-        <div class="lib-book-title">${book.title}</div>
-        <div class="lib-book-author">${book.author}</div>
-        <div class="lib-book-actions">
-          <button class="lib-action-btn" onclick="openEditModal('${book.id}')">Manage</button>
-          <button class="lib-action-btn" onclick="openBookPanel('${book.id}')">Details</button>
-          <button class="lib-action-btn danger" onclick="removeBook('${book.id}')">Remove</button>
-        </div>
-      </div>
-    </div>`;
-}
-
-function renderLibrary() {
-  const lib = getLibrary();
-  const grid  = document.getElementById('libGrid');
-  const empty = document.getElementById('libEmpty');
-  
-  if(!grid || !empty) return; // Safety check
-
-  // Stats
-  document.getElementById('statTotal').textContent   = lib.length;
-  document.getElementById('statRead').textContent    = lib.filter(b=>b.shelf==='read').length;
-  document.getElementById('statReading').textContent = lib.filter(b=>b.shelf==='reading').length;
-  document.getElementById('statWant').textContent    = lib.filter(b=>b.shelf==='want').length;
-
-  // Filter
-  let filtered = lib;
-  if(currentShelf !== 'all') filtered = filtered.filter(b => b.shelf === currentShelf);
-  if(filterText) {
-    const q = filterText.toLowerCase();
-    filtered = filtered.filter(b => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q));
+(function () {
+  const $ = id => document.getElementById(id), { esc } = BW, root = $('lib'), user = BW.user();
+  const next = encodeURIComponent(location.href);
+  if (!user) {
+    root.innerHTML = `<div class="gate"><h1>Your library is waiting</h1><p class="sec-sub">Create a free reader profile to save books and track your reading.</p><a class="btn-primary" href="signup.html?next=${next}">Create my profile</a></div>`;
+    return;
   }
+  const goal = user.goal || 25, first = (user.name || 'Reader').split(' ')[0];
+  let lib = BW.store.get('bw_library', []), tab = 'all', q = '', view = 'grid';
+  const save = () => BW.store.set('bw_library', lib);
+  const ST = { want: 'Want to read', reading: 'Reading', done: 'Finished' };
+  const TABS = { all: 'All books', reading: 'Reading', done: 'Finished', want: 'Want to read' };
+  const COLORS = ['#1f5c4d', '#7a2a22', '#6b4a14', '#2a6b78', '#4f5d1f', '#5a3a52'];
+  const st = b => b.status || 'want';
+  const opts = cur => Object.entries(ST).map(([k, v]) => `<option value="${k}"${k === cur ? ' selected' : ''}>${v}</option>`).join('');
 
-  if(!filtered.length) {
-    grid.style.display = 'none';
-    empty.style.display = 'flex';
-  } else {
-    empty.style.display = 'none';
-    grid.style.display  = 'grid';
-    grid.innerHTML = filtered.map(renderLibCard).join('');
+  root.innerHTML = `<div class="lib-hero"><div><p class="sec-sub">Reader's library</p><h1>Your personal<br><em>reading world.</em></h1></div><div class="lstats" id="stats"></div></div>
+    <div class="goal" id="goal"></div>
+    <div class="ltools"><div class="finder-row" id="tabs"></div>
+      <input class="sub-input" id="lq" placeholder="Filter my books" aria-label="Filter my books" maxlength="80">
+      <button class="btn-ghost" id="viewBtn">Shelf view</button><button class="btn-ghost" id="addBtn">Add a book</button><button class="btn-ghost" id="passBtn">My pass</button></div>
+    <div id="shelf" class="lgrid"></div>`;
+
+  function card(b) {
+    const el = document.createElement('article'); el.className = 'lcard';
+    const pg = b.pages || 300, s = st(b), img = b.coverUrl || BW.cover(b.coverId);
+    el.innerHTML = `<button class="lcover" aria-label="Open ${esc(b.title)}">${img ? `<img loading="lazy" src="${esc(img)}" alt="">` : `<span>${esc(b.title)}</span>`}</button>
+      <div class="lbody"><h3>${esc(b.title)}</h3><p>${esc(b.author)}</p>
+      <select aria-label="Status">${opts(s)}</select>
+      ${s === 'reading' ? `<label class="prog"><input type="range" min="0" max="${pg}" value="${b.page || 0}"><span>${b.page || 0} / ${pg} pages</span></label>` : ''}
+      <button class="lrm">Remove</button></div>`;
+    el.querySelector('.lcover').onclick = () => BW.open(b);
+    el.querySelector('select').onchange = e => { b.status = e.target.value; if (b.status === 'done') b.page = pg; save(); draw(); };
+    const r = el.querySelector('input[type=range]');
+    if (r) r.oninput = () => { b.page = +r.value; r.nextElementSibling.textContent = `${b.page} / ${pg} pages`; save(); };
+    el.querySelector('.lrm').onclick = () => { lib = lib.filter(x => x !== b); save(); draw(); };
+    return el;
   }
-}
-
-// ── Shelf Tabs ─────────────────────────────────────────────────────────────────
-document.querySelectorAll('.shelf-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.shelf-tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    currentShelf = btn.dataset.shelf;
-    renderLibrary();
-  });
-});
-
-document.getElementById('libSearch')?.addEventListener('input', e => {
-  filterText = e.target.value;
-  renderLibrary();
-});
-
-document.getElementById('libClearBtn')?.addEventListener('click', () => {
-  if(confirm('Remove all books from your library? This cannot be undone.')) {
-    saveLibrary([]);
-    renderLibrary();
+  function spine(b, i) {
+    const el = document.createElement('button'); el.className = 'spine';
+    el.style.background = COLORS[i % COLORS.length]; el.style.height = 150 + (i * 23) % 60 + 'px';
+    el.innerHTML = `<span>${esc(b.title)}</span>`; el.title = b.title; el.onclick = () => BW.open(b);
+    return el;
   }
-});
-
-// ── Edit Modal ─────────────────────────────────────────────────────────────────
-const modal        = document.getElementById('libModal');
-const modalBackdrop = document.getElementById('modalBackdrop');
-
-window.openEditModal = function(bookId) {
-  const lib  = getLibrary();
-  const book = lib.find(b => b.id === bookId);
-  if(!book) return;
-  editingBook = book;
-
-  const img  = document.getElementById('modalCoverImg');
-  const text = document.getElementById('modalCoverText');
-  
-  if(book.cover) { 
-      img.src=book.cover; 
-      img.style.display='block'; 
-      text.style.display='none'; 
-  } else { 
-      img.style.display='none'; 
-      text.style.display='block'; 
-      text.textContent=book.title; 
-  }
-
-  document.getElementById('modalGenre').textContent  = '✦ ' + (book.genres?.[0]||'Fiction');
-  document.getElementById('modalTitle').textContent  = book.title;
-  document.getElementById('modalAuthor').textContent = book.author;
-  document.getElementById('modalStars').textContent  = renderStars(book.rating);
-
-  document.querySelectorAll('.modal-shelf-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.shelf === book.shelf);
-  });
-
-  modal.classList.add('open');
-  modalBackdrop.classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
-
-function closeModal() {
-  modal.classList.remove('open');
-  modalBackdrop.classList.remove('open');
-  document.body.style.overflow = '';
-  editingBook = null;
-}
-
-document.getElementById('modalClose')?.addEventListener('click', closeModal);
-modalBackdrop?.addEventListener('click', closeModal);
-
-document.querySelectorAll('.modal-shelf-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if(!editingBook) return;
-    const lib = getLibrary();
-    const idx = lib.findIndex(b => b.id === editingBook.id);
-    if(idx !== -1) { 
-        lib[idx].shelf = btn.dataset.shelf; 
-        saveLibrary(lib); 
+  function draw() {
+    const n = s => lib.filter(b => st(b) === s).length, done = n('done');
+    $('stats').innerHTML = [[lib.length, 'Total'], [done, 'Finished'], [n('reading'), 'Reading'], [n('want'), 'Want to read']].map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('');
+    const pct = Math.min(100, Math.round(done / goal * 100));
+    $('goal').innerHTML = `<b>${esc(first)}, your ${new Date().getFullYear()} goal:</b> ${done} of ${goal} books<i><u style="width:${pct}%"></u></i>`;
+    $('tabs').innerHTML = Object.entries(TABS).map(([k, v]) => `<button class="chip${k === tab ? ' on' : ''}" data-k="${k}" aria-pressed="${k === tab}">${v}</button>`).join('');
+    $('tabs').querySelectorAll('.chip').forEach(c => c.onclick = () => { tab = c.dataset.k; draw(); });
+    const list = lib.filter(b => (tab === 'all' || st(b) === tab) && (!q || (b.title + ' ' + b.author).toLowerCase().includes(q)));
+    const box = $('shelf'); box.innerHTML = ''; box.className = view === 'grid' ? 'lgrid' : 'lshelf';
+    if (!list.length) {
+      box.className = 'lgrid';
+      box.innerHTML = `<div class="loading-msg">${lib.length ? 'Nothing on this shelf yet.' : 'Your library is empty. Open any book and press "Add to My Library", or use "Add a book".'}</div>`;
+      return;
     }
-    document.querySelectorAll('.modal-shelf-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderLibrary();
-  });
-});
-
-document.getElementById('modalRemoveBtn')?.addEventListener('click', () => {
-  if(!editingBook) return;
-  removeBook(editingBook.id);
-  closeModal();
-});
-
-window.removeBook = function(bookId) {
-  if(!confirm('Are you sure you want to remove this book?')) return;
-  const lib = getLibrary().filter(b => b.id !== bookId);
-  saveLibrary(lib);
-  renderLibrary();
-};
-
-// ── Missing Logic: openPanel ───────────────────────────────────────────────
-// This was the main cause of the error. Ensure you have this function defined.
-window.openPanel = function(book) {
-    console.log("Opening details for:", book.title);
-    // Add your logic to show a side panel or detail view here
-    // Example: document.getElementById('sidePanel').classList.add('active');
-};
-
-window.openBookPanel = function(bookId) {
-  const lib  = getLibrary();
-  const book = lib.find(b => b.id === bookId);
-  if(book) openPanel(book);
-};
-
-// ── DOMContentLoaded ───────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', renderLibrary);
+    list.forEach((b, i) => box.appendChild(view === 'grid' ? card(b) : spine(b, i)));
+  }
+  $('lq').oninput = e => { q = e.target.value.trim().toLowerCase(); draw(); };
+  $('viewBtn').onclick = e => { view = view === 'grid' ? 'shelf' : 'grid'; e.target.textContent = view === 'grid' ? 'Shelf view' : 'Grid view'; draw(); };
+  $('passBtn').onclick = () => BW.pop('Your reader pass', BW.passHTML(user) + `<p><a href="signup.html?next=${next}">Edit profile</a></p>`);
+  $('addBtn').onclick = () => {
+    const d = BW.pop('Add a book', `<form class="lform" id="mf"><input class="sub-input" id="mt" placeholder="Title" required maxlength="150" aria-label="Title"><input class="sub-input" id="ma" placeholder="Author" required maxlength="100" aria-label="Author"><input class="sub-input" id="mp" type="number" min="1" max="5000" placeholder="Pages (optional)" aria-label="Pages"><select class="sub-input" id="ms" aria-label="Status">${opts('want')}</select><button class="btn-primary">Save to library</button></form>`);
+    d.querySelector('#mf').onsubmit = e => {
+      e.preventDefault();
+      lib.unshift({ key: 'manual:' + Date.now(), title: d.querySelector('#mt').value.trim(), author: d.querySelector('#ma').value.trim(), pages: +d.querySelector('#mp').value || null, status: d.querySelector('#ms').value });
+      save(); d.close(); draw();
+    };
+  };
+  draw();
+})();

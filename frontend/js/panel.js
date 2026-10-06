@@ -1,160 +1,143 @@
-// ─── panel.js ────────────────────────────────────────────────────────────────
-const localReviews = {
-  'fourth wing': { reviews: [
-    { name: 'Aria K.', badge: 'Verified', stars: '★★★★★', text: 'I finished this in one sitting. The dragons, the tension — impossible to put down.', date: 'Feb 2026' },
-    { name: 'James R.', badge: 'Top Reader', stars: '★★★★★', text: "The world-building is extraordinary. Best fantasy I've read in years.", date: 'Jan 2026' },
-    { name: 'Sophie M.', badge: 'Verified', stars: '★★★★☆', text: 'The slow burn romance is executed perfectly.', date: 'Dec 2025' },
-  ], bars: [92,75,40,10,5] },
-  '1984': { reviews: [
-    { name: 'Omar T.', badge: 'Top Reader', stars: '★★★★★', text: 'Reading this in 2026 is terrifying — how prescient it is.', date: 'Mar 2026' },
-    { name: 'Layla S.', badge: 'Verified', stars: '★★★★★', text: "The language Orwell invented has become part of how we understand the world.", date: 'Jan 2026' },
-  ], bars: [88,70,30,8,4] },
-  default: { reviews: [
-    { name: 'BookWorm Reader', badge: 'Verified', stars: '★★★★☆', text: 'A wonderful read. Highly recommended to anyone who loves this genre.', date: 'Apr 2026' },
-  ], bars: [70,65,40,15,8] }
-};
-
-const panel    = document.getElementById('sidePanel');
-const backdrop = document.getElementById('backdrop');
-const panelClose = document.getElementById('panelClose');
-
-async function openPanel(book) {
-  populateHeader(book);
-  panel.classList.add('open');
-  backdrop.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  switchTab('summary');
-  updateAddBtn(book);
-
-  // Use description already on book object (Google Books includes it inline)
-  if (book.description) {
-    document.getElementById('panelSummary').textContent = book.description;
-    populateDetailsTab({ description: book.description, subjects: book.subjects || [] });
-  } else {
-    document.getElementById('panelSummary').textContent = 'Loading description…';
-    if (book.id) {
-      const details = await api.getDetails(book.id);
-      if (details) {
-        document.getElementById('panelSummary').textContent = details.description || 'No description available.';
-        populateDetailsTab(details);
-      } else {
-        document.getElementById('panelSummary').textContent = 'Description not available.';
-      }
+/* BookWorm's Hub — card renderer + book viewer */
+(function () {
+  const { esc, cover } = BW;
+  const store = {
+    get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+    set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+  BW.store = store;
+  // Finish a save that was interrupted by sign-up
+  const pend = store.get('bw_pending', null);
+  if (pend && BW.user()) {
+    if (pend.book) {
+      const lib = store.get('bw_library', []);
+      if (!lib.some(x => x.key === pend.book.key)) lib.push(pend.book);
+      store.set('bw_library', lib);
+      if (pend.review) { const all = store.get('bw_reviews', {}); (all[pend.book.key] ||= []).unshift(pend.review); store.set('bw_reviews', all); }
     }
+    store.set('bw_pending', null);
+  }
+  let current = null, cache = new Map();
+
+  // A book card; clicking it opens the viewer
+  const cv = (b, s) => b.coverUrl || cover(b.coverId, s);
+  BW.card = (b) => {
+    const el = document.createElement('button');
+    el.className = 'card';
+    el.innerHTML = `<div class="card-cover">${(b.coverUrl || b.coverId)
+      ? `<img loading="lazy" src="${cv(b)}" alt="">` : `<span>${esc(b.title)}</span>`}</div>
+      <div class="card-title">${esc(b.title)}</div><div class="card-author">${esc(b.author)}</div>${b.date ? `<div class="card-date">${esc(b.date)}</div>` : ''}`;
+    el.addEventListener('click', () => BW.open(b));
+    return el;
+  };
+  BW.fill = (grid, books, empty = 'No books found.') => {
+    grid.innerHTML = '';
+    if (!books.length) grid.innerHTML = `<div class="loading-msg">${empty}</div>`;
+    books.forEach(b => grid.appendChild(BW.card(b)));
+  };
+
+  function build() {
+    if (document.getElementById('bkBack')) return;
+    document.body.insertAdjacentHTML('beforeend', `
+    <div class="bk-back" id="bkBack" role="dialog" aria-modal="true" aria-label="Book details">
+      <button class="bk-x" id="bkX" aria-label="Close">✕</button>
+      <div class="bk" id="bk">
+        <section class="bk-page bk-left">
+          <div class="bk-img" id="bkImg"></div>
+          <h2 id="bkTitle"></h2><p class="bk-author" id="bkAuthor"></p>
+          <p class="bk-meta" id="bkMeta"></p>
+          <button class="btn-primary" id="bkAdd">Add to My Library</button>
+        </section>
+        <section class="bk-page bk-right">
+          <div class="bk-tabs">
+            <button class="on" data-t="summary">Summary</button><button data-t="reviews">Reviews</button><button data-t="details">Details</button>
+          </div>
+          <div class="bk-body">
+            <div class="bk-pane on" id="t-summary"></div>
+            <div class="bk-pane" id="t-reviews"></div>
+            <div class="bk-pane" id="t-details"></div>
+          </div>
+        </section>
+        <div class="bk-cover" id="bkCover"><span id="bkCoverT"></span></div>
+      </div>
+    </div>`);
+    const $ = id => document.getElementById(id);
+    $('bkX').onclick = BW.close;
+    $('bkBack').addEventListener('click', e => { if (e.target.id === 'bkBack') BW.close(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') BW.close(); });
+    document.querySelectorAll('.bk-tabs button').forEach(t => t.onclick = () => {
+      document.querySelectorAll('.bk-tabs button,.bk-pane').forEach(x => x.classList.remove('on'));
+      t.classList.add('on'); $('t-' + t.dataset.t).classList.add('on');
+    });
+    $('bkAdd').onclick = () => {
+      if (!BW.requireUser({ book: current })) return;
+      const lib = store.get('bw_library', []);
+      if (!lib.some(x => x.key === current.key)) lib.push(current);
+      store.set('bw_library', lib); $('bkAdd').textContent = '✓ In My Library';
+    };
   }
 
-  populateReviews(book);
-  setTimeout(() => {
-    document.querySelectorAll('.rating-bar-fill').forEach(el => { el.style.width = el.dataset.width; });
-  }, 600);
-}
+  BW.open = async function (b) {
+    build(); current = b;
+    const $ = id => document.getElementById(id);
+    $('bkImg').innerHTML = (b.coverUrl || b.coverId) ? `<img src="${cv(b, 'L')}" alt="Cover of ${esc(b.title)}">` : `<span>${esc(b.title)}</span>`;
+    $('bkTitle').textContent = b.title; $('bkAuthor').textContent = b.author; $('bkCoverT').textContent = b.title;
+    $('bkMeta').textContent = [b.date ? 'Released ' + b.date : b.year && 'First published ' + b.year, b.pages && b.pages + ' pages'].filter(Boolean).join(' · ');
+    $('bkAdd').textContent = store.get('bw_library', []).some(x => x.key === b.key) ? '✓ In My Library' : 'Add to My Library';
+    $('t-summary').innerHTML = '<p class="muted">Turning the page…</p>';
+    $('t-reviews').innerHTML = $('t-details').innerHTML = '';
+    document.querySelector('.bk-tabs button').click();
+    $('bkBack').classList.add('show'); document.body.classList.add('noscroll');
+    requestAnimationFrame(() => setTimeout(() => $('bk').classList.add('open'), 60));
 
-function updateAddBtn(book) {
-  const btn = document.getElementById('panelAddBtn');
-  if (!btn) return;
-  const lib = getLibrary();
-  const exists = lib.find(b => b.id === book.id);
-  if (exists) {
-    btn.textContent = '✓ In My Library';
-    btn.classList.add('added');
-    btn.onclick = null;
-  } else {
-    btn.textContent = '✦ Add to My Library';
-    btn.classList.remove('added');
-    btn.onclick = () => { addToLibrary(book); updateAddBtn(book); };
+    try {
+      const d = cache.get(b.key) || await BW.api.details(b); cache.set(b.key, d);
+      if (current !== b) return;
+      $('t-summary').innerHTML = d.summary ? d.summary.split(/\n+/).map(p => `<p>${esc(p)}</p>`).join('')
+        : '<p class="muted">No summary has been written for this book yet.</p>';
+      $('t-details').innerHTML = `<h3>Subjects</h3><div class="tags">${d.subjects.map(s => `<span>${esc(s)}</span>`).join('') || '<p class="muted">No subjects listed.</p>'}</div>`;
+      renderReviews(d, b);
+      const first = d.subjects[0];
+      if (first) BW.api.search(`subject:"${first}"`, 5).then(sim => {
+        if (current !== b) return;
+        $('t-details').insertAdjacentHTML('beforeend', '<h3>Similar reads</h3><ul class="similar"></ul>');
+        const ul = $('t-details').querySelector('.similar');
+        sim.filter(s => s.key !== b.key).slice(0, 4).forEach(s => {
+          const li = document.createElement('li'); li.innerHTML = `<b>${esc(s.title)}</b> <i>${esc(s.author)}</i>`;
+          li.onclick = () => BW.open(s); ul.appendChild(li);
+        });
+      }).catch(() => {});
+    } catch {
+      $('t-summary').innerHTML = '<p class="muted">Couldn\'t load details. Check your connection and reopen this book.</p>';
+    }
+  };
+
+  function renderReviews(d, b) {
+    const total = Object.values(d.dist).reduce((a, n) => a + n, 0);
+    const bars = [5, 4, 3, 2, 1].map(n => {
+      const pct = total ? Math.round((d.dist[n] || 0) / total * 100) : 0;
+      return `<div class="bar"><span>${n}★</span><i><u style="width:${pct}%"></u></i><span>${pct}%</span></div>`;
+    }).join('');
+    const mine = store.get('bw_reviews', {})[b.key] || [];
+    const pane = document.getElementById('t-reviews');
+    pane.innerHTML = `<div class="rev-top"><div class="rev-num">${d.average ? d.average.toFixed(1) : '—'}</div>
+      <div class="rev-bars">${total ? bars : '<p class="muted">No star breakdown available.</p>'}<small>${d.count} reader ratings</small></div></div>
+      <h3>Your review</h3>
+      <textarea id="rvText" rows="3" placeholder="What did you think?"></textarea>
+      <button class="btn-ghost" id="rvSave">Save review</button><div id="rvList"></div>`;
+    const list = () => document.getElementById('rvList').innerHTML = mine.map(t => `<blockquote>${esc(t)}</blockquote>`).join('');
+    list();
+    document.getElementById('rvSave').onclick = () => {
+      const t = document.getElementById('rvText').value.trim(); if (!t) return;
+      if (!BW.requireUser({ book: b, review: t })) return;
+      mine.unshift(t); const all = store.get('bw_reviews', {}); all[b.key] = mine; store.set('bw_reviews', all);
+      document.getElementById('rvText').value = ''; list();
+    };
   }
-}
 
-function getLibrary() {
-  try { return JSON.parse(localStorage.getItem('bwh_library') || '[]'); }
-  catch { return []; }
-}
-
-function addToLibrary(book) {
-  const lib = getLibrary();
-  if (lib.find(b => b.id === book.id)) return;
-  lib.push({ ...book, shelf: 'want', addedAt: Date.now() });
-  localStorage.setItem('bwh_library', JSON.stringify(lib));
-  showToast(`"${book.title}" added to your library!`);
-}
-
-function showToast(msg) {
-  let t = document.getElementById('bwh-toast');
-  if (!t) {
-    t = document.createElement('div');
-    t.id = 'bwh-toast';
-    t.style.cssText = `
-      position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
-      background:var(--gold);color:var(--bg);padding:12px 24px;border-radius:50px;
-      font-family:var(--mono);font-size:12px;letter-spacing:.08em;font-weight:500;
-      z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;
-    `;
-    document.body.appendChild(t);
-  }
-  t.textContent = msg;
-  setTimeout(() => { t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; }, 10);
-  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; }, 2800);
-}
-
-function populateHeader(book) {
-  const coverImg  = document.getElementById('panelCoverImg');
-  const coverText = document.getElementById('panelCoverText');
-  if (book.cover) {
-    coverImg.src = book.cover; coverImg.style.display = 'block';
-    if (coverText) coverText.style.display = 'none';
-  } else {
-    coverImg.style.display = 'none';
-    if (coverText) { coverText.style.display = 'block'; coverText.textContent = book.title; }
-  }
-  document.getElementById('panelGenre').textContent  = '✦ ' + (book.genres?.[0] || 'Fiction');
-  document.getElementById('panelTitle').textContent  = book.title;
-  document.getElementById('panelAuthor').textContent = book.author;
-  document.getElementById('panelPages').textContent  = book.pages ? book.pages + ' pages' : '—';
-  const rating = book.rating || 0;
-  document.getElementById('panelStars').textContent  = rating ? '★ ' + rating.toFixed(1) : '—';
-  document.getElementById('panelRating').textContent = rating ? '/ 5' : '';
-  document.getElementById('detailGenre').textContent = book.genres?.[0] || '—';
-  document.getElementById('detailPages').textContent = book.pages || '—';
-  document.getElementById('detailYear').textContent  = book.year || '—';
-  document.getElementById('detailRating').textContent = rating ? rating + ' ★' : '—';
-}
-
-function populateReviews(book) {
-  const data = localReviews[book.title.toLowerCase()] || localReviews.default;
-  document.getElementById('reviewsBigNum').textContent = book.rating || '—';
-  document.getElementById('reviewsBars').innerHTML = [5,4,3,2,1].map((n,i) => `
-    <div class="rating-bar-row">
-      <div class="rating-bar-label">${n}</div>
-      <div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%" data-width="${data.bars[i]}%"></div></div>
-      <div class="rating-bar-count">${data.bars[i]}%</div>
-    </div>`).join('');
-  document.getElementById('reviewsList').innerHTML = data.reviews.map(r => `
-    <div class="review-card">
-      <div class="review-card-header"><div class="reviewer-name">${r.name}</div><div class="reviewer-badge">${r.badge}</div></div>
-      <div class="review-card-stars">${r.stars}</div>
-      <div class="review-card-text">"${r.text}"</div>
-      <div class="review-card-date">${r.date}</div>
-    </div>`).join('');
-}
-
-function populateDetailsTab(details) {
-  document.getElementById('panelTags').innerHTML = (details.subjects?.length)
-    ? details.subjects.map(s => `<span class="tag-item">${s}</span>`).join('')
-    : '<span class="tag-item">No subjects listed</span>';
-  document.getElementById('panelSimilar').innerHTML = `<div class="similar-ph">Sign in to see personalised recommendations</div>`;
-}
-
-function closePanel() {
-  panel.classList.remove('open'); backdrop.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function switchTab(name) {
-  document.querySelectorAll('.panel-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-  document.querySelectorAll('.panel-tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
-}
-
-panelClose.addEventListener('click', closePanel);
-backdrop.addEventListener('click', closePanel);
-document.querySelectorAll('.panel-tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+  BW.close = function () {
+    const back = document.getElementById('bkBack'); if (!back) return;
+    document.getElementById('bk').classList.remove('open');
+    setTimeout(() => { back.classList.remove('show'); document.body.classList.remove('noscroll'); current = null; }, 500);
+  };
+})();
