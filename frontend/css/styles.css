@@ -1,6 +1,58 @@
-:root{--pink:#d9684f;--bg:#0b1a15;--bg2:#12261f;--ink:#f4eedd;--mute:#a9bfb2;--brass:#e0a84f;--teal:#7fc4a6;--line:#24413a;--paper:#f3ead8;--paper-ink:#2a2230;
---serif:'Playfair Display',Georgia,serif;--sans:'Plus Jakarta Sans',system-ui,sans-serif}
-@media(prefers-color-scheme:light){:root{--bg:#f7f3e6;--bg2:#ece4cd;--ink:#1c2e26;--mute:#5b6f64;--line:#d9ceb0;--brass:#a8741f;--teal:#1f7a5c}}
+/* ==========================================================================
+   Theme Variables & Overrides
+   ========================================================================== */
+:root {
+  /* Default Light Mode Colors */
+  --bg: #f7f3e6;
+  --bg2: #ece4cd;
+  --ink: #1c2e26;
+  --mute: #5b6f64;
+  --line: #d9ceb0;
+  --brass: #a8741f;
+  --teal: #1f7a5c;
+  --pink: #d9684f;
+  --paper: #f3ead8;
+  --paper-ink: #2a2230;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* Dark Mode Overrides */
+html.dark {
+  --bg: #0b1a15;
+  --bg2: #12261f;
+  --ink: #f4eedd;
+  --mute: #a9bfb2;
+  --line: #24413a;
+  --brass: #e0a84f;
+  --teal: #7fc4a6;
+  --pink: #d9684f;
+}
+
+/* Smooth transition when toggling modes */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme Toggle Button Style */
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.theme-toggle-btn:hover {
+  border-color: var(--brass);
+  background: var(--bg2);
+}
+
 *{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6}
 body.noscroll{overflow:hidden}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}

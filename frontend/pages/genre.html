@@ -1,17 +1,58 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="../css/styles.css"><title>Genre — BookWorm's Hub</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Anti-Flicker Theme Script: Inserted BEFORE styles.css to prevent flash on load -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('bw_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <title>Genre — BookWorm's Hub</title>
+</head>
 <body>
-<div id="siteNav"></div>
-<header class="genre-head">
-  <h1 id="gTitle">Genre</h1><p class="sec-sub" id="gCount">Loading…</p>
-  <div class="genre-pills" id="pills"></div>
-  <div class="genre-tools"><div class="finder-row" id="sorts" role="group" aria-label="Sort"></div>
-  <input class="sub-input" id="filter" type="text" placeholder="Filter by title or author" aria-label="Filter books"></div>
-</header>
-<section class="books-section">
-  <div class="books-grid" id="grid"><div class="loading-msg">Loading books…</div></div>
-  <div class="more-wrap"><button class="btn-ghost" id="more" hidden>Load more books</button></div>
-</section>
-<div id="siteFooter"></div>
-<script src="../js/api.js"></script><script src="../js/panel.js"></script><script src="../js/site.js"></script><script src="../js/genre.js"></script>
-</body></html>
+  <div id="siteNav"></div>
+
+  <header class="genre-head">
+    <h1 id="gTitle">Genre</h1>
+    <p class="sec-sub" id="gCount">Loading…</p>
+    <div class="genre-pills" id="pills"></div>
+    <div class="genre-tools">
+      <div class="finder-row" id="sorts" role="group" aria-label="Sort"></div>
+      <input class="sub-input" id="filter" type="text" placeholder="Filter by title or author" aria-label="Filter books">
+    </div>
+  </header>
+
+  <section class="books-section">
+    <div class="books-grid" id="grid">
+      <div class="loading-msg">Loading books…</div>
+    </div>
+    <div class="more-wrap">
+      <button class="btn-ghost" id="more" hidden>Load more books</button>
+    </div>
+  </section>
+
+  <div id="siteFooter"></div>
+
+  <!-- Main scripts -->
+  <script src="../js/api.js"></script>
+  <script src="../js/panel.js"></script>
+  <script src="../js/site.js"></script>
+  <script src="../js/genre.js"></script>
+  
+  <!-- Centralized Theme Controller script -->
+  <script src="../js/theme.js"></script>
+</body>
+</html>

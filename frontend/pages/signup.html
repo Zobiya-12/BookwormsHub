@@ -1,24 +1,64 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="../css/styles.css"><title>Join BookWorm's Hub</title></head>
-<body>
-<div id="siteNav"></div>
-<main class="sign-grid">
-  <form class="panel" id="form">
-    <div><h1>Start your library</h1><p class="sec-sub">Create a free reader profile to save books and post reviews.</p></div>
-    <div class="two">
-      <label class="field">Full name<input class="sub-input" id="name" required maxlength="60" autocomplete="name"></label>
-      <label class="field">Email<input class="sub-input" id="email" type="email" required maxlength="120" autocomplete="email"></label>
-    </div>
-    <h2>Pick your mascot</h2><div class="avatars" id="avatars"></div>
-    <h2>Favourite genres <small id="gc"></small></h2><div class="finder-row" id="pills"></div>
-    <h2>Yearly reading goal: <span id="goalV">25</span> books</h2>
-    <input type="range" id="goal" min="1" max="100" value="25" aria-label="Books per year"><p class="sec-sub" id="tierT"></p>
-    <button class="btn-primary" type="submit">Create my profile</button>
-    <a class="auth-back" id="later" href="../index.html">Maybe later</a>
-    <p class="sub-note">Demo profile: saved only in this browser. No password is collected.</p>
-  </form>
-  <aside><p class="sec-sub">Live preview</p><div id="preview"></div></aside>
-</main>
-<div id="siteFooter"></div>
-<script src="../js/api.js"></script><script src="../js/panel.js"></script><script src="../js/site.js"></script><script src="../js/signup.js"></script>
-</body></html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join BookWorm's Hub | Interactive Reader Pass</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cinzel:wght@600;700;800&family=Alex+Brush&family=Libre+Baskerville:ital@1&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sanctuary: {
+                            50: '#f8f6f0',
+                            100: '#efebd8',
+                            200: '#ded4b5',
+                            300: '#cbb68d',
+                            400: '#b49463',
+                            500: '#9b7646',
+                            600: '#7e5a37',
+                            700: '#63442e',
+                            800: '#4b3425',
+                            900: '#34231b',
+                            dark: '#080f0d',
+                            cardDark: '#101c18',
+                        },
+                        emeraldDeep: '#0b231c',
+                        forestGreen: '#183c31',
+                        sageGreen: '#7c9e91',
+                        warmOchre: '#d9a05b',
+                        antiqueGold: '#c89b56',
+                        terracotta: '#c25948',
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        script: ['Alex Brush', 'cursive'],
+                        baskerville: ['Libre Baskerville', 'serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    boxShadow: {
+                        'card-glow': '0 20px 40px -15px rgba(24, 60, 49, 0.35)',
+                        'gold-glow': '0 0 25px rgba(200, 155, 86, 0.4)',
+                        'seal-shadow': '0 10px 25px -5px rgba(194, 89, 72, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+</html>
