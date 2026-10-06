@@ -33,7 +33,7 @@
   };
   const POP = {
     about: ['About BookWorm\'s Hub', '<p>BookWorm\'s Hub helps readers discover books by mood, genre, year and country, then keep a personal library of what they want to read, are reading and have finished.</p><p>Book data comes from the open Open Library catalogue.</p>'],
-    contact: ['Contact us', '<p>Questions, feedback, or a book we should feature? Write to us:</p><p><a href="mailto:newsletter.padding547@simplelogin.com">mail here</a></p><p><small>This is a placeholder address. Replace it with your real one before launch.</small></p>'],
+    contact: ['Contact us', '<p>Questions, feedback, or a book we should feature? Write to us:</p><p><a href="mailto:newsletter.padding547@simplelogin.com">mail here</a></p>'],
     privacy: ['Privacy', '<ul><li>Your profile, library and reviews are saved only in this browser\'s local storage. They are not sent to or stored on our servers.</li><li>Searching and browsing sends your queries to Open Library to fetch book data.</li><li>Fonts load from Google Fonts, which can see your IP address.</li><li>We use no cookies or analytics. Clearing your browser data deletes everything saved here.</li><li>The newsletter box is not connected to anything yet, so your email goes nowhere.</li></ul>']
   };
   document.addEventListener('click', e => {
