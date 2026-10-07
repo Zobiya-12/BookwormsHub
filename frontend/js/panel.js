@@ -65,15 +65,18 @@
     $('bkX').onclick = BW.close;
     $('bkBack').addEventListener('click', e => { if (e.target.id === 'bkBack') BW.close(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') BW.close(); });
-    document.querySelectorAll('.bk-tabs button').forEach(t => t.onclick = () => {
+    document.querySelectorAll('.bk-tabs button').forEach(t => t.onclick = e => {
       document.querySelectorAll('.bk-tabs button,.bk-pane').forEach(x => x.classList.remove('on'));
       t.classList.add('on'); $('t-' + t.dataset.t).classList.add('on');
+      if (e && e.isTrusted && BW.sfx) BW.sfx.page();
     });
     $('bkAdd').onclick = () => {
       if (!BW.requireUser({ book: current })) return;
       const lib = store.get('bw_library', []);
-      if (!lib.some(x => x.key === current.key)) lib.push(current);
+      const had = lib.some(x => x.key === current.key);
+      if (!had) lib.push(current);
       store.set('bw_library', lib); $('bkAdd').textContent = '✓ In My Library';
+      if (!had && BW.sfx) BW.sfx.add();
     };
   }
 
@@ -87,6 +90,7 @@
     $('t-summary').innerHTML = '<p class="muted">Turning the page…</p>';
     $('t-reviews').innerHTML = $('t-details').innerHTML = '';
     document.querySelector('.bk-tabs button').click();
+    if (BW.sfx) { if ($('bkBack').classList.contains('show')) BW.sfx.page(); else BW.sfx.open(); }
     $('bkBack').classList.add('show'); document.body.classList.add('noscroll');
     requestAnimationFrame(() => setTimeout(() => $('bk').classList.add('open'), 60));
 
@@ -137,6 +141,7 @@
 
   BW.close = function () {
     const back = document.getElementById('bkBack'); if (!back) return;
+    if (back.classList.contains('show') && BW.sfx) BW.sfx.close();
     document.getElementById('bk').classList.remove('open');
     setTimeout(() => { back.classList.remove('show'); document.body.classList.remove('noscroll'); current = null; }, 500);
   };
